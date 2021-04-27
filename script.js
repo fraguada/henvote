@@ -1,5 +1,4 @@
-import { Octokit } from 'https://cdn.skypack.dev/@octokit/core'
-console.log( 'hi' )
+import { Octokit } from 'https://cdn.skypack.dev/@octokit/rest'
 
 const octokit = new Octokit()
 
@@ -7,10 +6,10 @@ getit()
 
 async function getit() {
 
-    const response = await octokit.request("GET /orgs/{org}/repos", {
-        org: "hicetnunc2000",
-        type: "public",
-    })
+    const response = await octokit.rest.issues.listForRepo({
+        owner: 'hicetnunc2000',
+        repo: 'hicetnunc',
+      })
 
     console.log( response )
 }
