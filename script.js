@@ -12,4 +12,13 @@ async function getit() {
       })
 
     console.log( response )
+
+    for( let i = 0; i < response.data.length; i++ ) {
+
+        let issue = response.data[ i ]
+        var el = document.createElement( 'div' )
+        el.innerText = issue.title
+        document.body.appendChild( el )
+
+    }
 }
