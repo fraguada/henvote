@@ -26,8 +26,13 @@
         
       }
 
-      .issue {
-        display:inline-block;
+      button {
+        transition-duration: 0.4s;
+      }
+
+      .button:hover {
+        background-color: #ffffff;
+        color: white;
       }
 
 
@@ -54,6 +59,8 @@
   <body>
     <div id="loader"></div>
     <h1>hicetnunc feature request voting</h1>
+    <button id="loginbtn">Authorize your Github account to vote</button>
+    <hr>
     <script type="module" src="script.js"></script>
   </body>
 </html>

@@ -4,6 +4,17 @@ import { Octokit } from 'https://cdn.skypack.dev/@octokit/rest'
 //currently not authenticated
 const octokit = new Octokit();
 
+const loginbtn = document.getElementById( 'loginbtn' )
+loginbtn.onclick = () => {
+
+    window.location.href = 'https://github.com/login/oauth/authorize?client_id=21066815541aa6f53c67&redirect_uri=https%3A%2F%2Ffraguada.github.io%2Fhenvote%2F'
+
+}
+
+function vote () {
+    console.log( 'vote!' )
+}
+
 (async () => {
 
     const data = await getIssuesData()
@@ -17,13 +28,18 @@ const octokit = new Octokit();
         const a = document.createElement( 'a' )
         const div = document.createElement( 'div' )
         const hr = document.createElement( 'hr' )
+        const btn = document.createElement( 'button' )
         a.href = d.url
-        a.innerText = ' ' + d.number + ': ' + d.title
+        a.innerText = ' #' + d.number + ': ' + d.title
         div.innerText = 'votes: ' + d.votes + ' |'
         div.style.display = 'inline-block'
+        btn.id = 'votebtn'
+        btn.onclick = vote()
+        btn.innerText = 'vote'
+        el.appendChild( btn )
         el.appendChild( div )
         el.appendChild( a )
-        el.style.display = 'inline-block;'
+        el.style.display = 'inline-block'
         document.body.appendChild( el )
         document.body.appendChild( hr )
 
