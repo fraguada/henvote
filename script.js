@@ -1,24 +1,113 @@
+// documentation for octokit: https://octokit.github.io/rest.js/v18
 import { Octokit } from 'https://cdn.skypack.dev/@octokit/rest'
 
-const octokit = new Octokit()
+//currently not authenticated
+const octokit = new Octokit();
 
-getit()
+(async () => {
 
-async function getit() {
+    const data = await getIssuesData()
+    console.log(data)
+
+    for ( let i = 0; i < data.length; i ++ ) {
+
+        const d = data[ i ]
+
+        const el = document.createElement( 'div' )
+        const a = document.createElement( 'a' )
+        const div = document.createElement( 'div' )
+        a.href = d.url
+        a.innerText = d.number + ': ' + d.title
+        div.innerText = 'votes:' + d.votes
+        el.appendChild( div )
+        el.appendChild( a )
+        document.body.appendChild( el )
+
+    }
+
+    document.getElementById('loader').remove()
+
+})().catch(e => {
+    // do something with errors
+});
+
+async function getIssuesData() {
+
+    const d = []
+
+    const issues = await getIssues()
+
+    console.log( issues )
+
+    for( let i = 0; i < issues.data.length; i++ ) {
+
+        const issue = issues.data[ i ]
+
+        //console.log( issue )
+
+        // skip pull requests if they are labeled 'feature-request'
+        // we could add associated PRs later if relevant
+        if ( issue.hasOwnProperty( 'pull_request' ) ) continue
+
+        const reactions = await getIssueReactions( issue.number )
+
+        let votes = 0
+
+        if ( reactions.data.length > 0 ) {
+
+            for( let j = 0; j < reactions.data.length; j++ ) {
+
+                const reaction = reactions.data[ j ]
+
+                if ( reaction.content === '+1' ) {
+
+                    votes ++
+
+                }
+
+            }
+
+        }
+
+        const issueData = {
+            number: issue.number,
+            title: issue.title,
+            url: issue.html_url,
+            votes: votes
+        }
+
+        //console.log( d )
+        d.push( issueData )
+        
+    }
+
+    //sort
+    d.sort((a, b) => (a.votes > b.votes) ? -1 : 1)
+    return d
+
+}
+
+async function getIssues() {
 
     const response = await octokit.rest.issues.listForRepo({
         owner: 'hicetnunc2000',
         repo: 'hicetnunc',
-      })
+        state: 'open',
+        labels: 'feature-request',
+        per_page: 100
+    } )
 
-    console.log( response )
+    return response
+}
 
-    for( let i = 0; i < response.data.length; i++ ) {
+async function getIssueReactions ( issueId ) {
 
-        let issue = response.data[ i ]
-        var el = document.createElement( 'div' )
-        el.innerText = issue.title
-        document.body.appendChild( el )
+    const response = await octokit.rest.reactions.listForIssue({
+        owner: 'hicetnunc2000',
+        repo: 'hicetnunc',
+        issue_number: issueId,
+    })
 
-    }
+    return response
+
 }
