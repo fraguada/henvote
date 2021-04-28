@@ -4,7 +4,26 @@ import { Octokit } from 'https://cdn.skypack.dev/@octokit/rest'
 //currently not authenticated
 const octokit = new Octokit();
 
+let userId = null
+
+getUser()
+
+function getUser() {
+    const here = window.location.href
+
+    if ( here.includes( 'code' ) === true ) {
+
+        userId = here.substring( here.indexOf( '=' ) + 1 )
+
+        console.log( userId )
+
+    }
+}
+
 const loginbtn = document.getElementById( 'loginbtn' )
+if ( userId !== null ) {
+    loginbtn.disabled = true
+}
 loginbtn.onclick = () => {
 
     window.location.href = 'https://github.com/login/oauth/authorize?client_id=21066815541aa6f53c67&redirect_uri=https%3A%2F%2Ffraguada.github.io%2Fhenvote%2F'
@@ -13,7 +32,10 @@ loginbtn.onclick = () => {
 
 function vote () {
     console.log( 'vote!' )
+    // TODO: https://docs.github.com/en/developers/apps/identifying-and-authorizing-users-for-github-apps
 }
+
+
 
 (async () => {
 
@@ -34,8 +56,9 @@ function vote () {
         div.innerText = 'votes: ' + d.votes + ' |'
         div.style.display = 'inline-block'
         btn.id = 'votebtn'
-        btn.onclick = vote()
+        btn.onclick = vote
         btn.innerText = 'vote'
+        btn.disabled = ( userId === null ) ? true : false
         el.appendChild( btn )
         el.appendChild( div )
         el.appendChild( a )
