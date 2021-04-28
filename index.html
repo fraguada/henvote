@@ -3,9 +3,33 @@
   <head>
     <title>henvote</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:;base64,=">
     <style>
-			body { margin: 0; }
+			body { 
+        margin: 10; 
+
+        font-family: "Courier New","Courier","monospace";
+        
+        }
+
+      a {
+        text-decoration: none;
+        color:black;
+      }
+      a:visited {
+        color: rgb(65, 65, 65);
+      }
+      a:hover {
+
+        text-decoration: underline;
+        
+      }
+
+      .issue {
+        display:inline-block;
+      }
+
 
 			/* CSS for a spinning animation */ 
 			#loader {
@@ -29,6 +53,7 @@
   </head>
   <body>
     <div id="loader"></div>
+    <h1>hicetnunc feature request voting</h1>
     <script type="module" src="script.js"></script>
   </body>
 </html>

@@ -16,12 +16,16 @@ const octokit = new Octokit();
         const el = document.createElement( 'div' )
         const a = document.createElement( 'a' )
         const div = document.createElement( 'div' )
+        const hr = document.createElement( 'hr' )
         a.href = d.url
-        a.innerText = d.number + ': ' + d.title
-        div.innerText = 'votes:' + d.votes
+        a.innerText = ' ' + d.number + ': ' + d.title
+        div.innerText = 'votes: ' + d.votes + ' |'
+        div.style.display = 'inline-block'
         el.appendChild( div )
         el.appendChild( a )
+        el.style.display = 'inline-block;'
         document.body.appendChild( el )
+        document.body.appendChild( hr )
 
     }
 
@@ -29,6 +33,7 @@ const octokit = new Octokit();
 
 })().catch(e => {
     // do something with errors
+    console.log( e )
 });
 
 async function getIssuesData() {
@@ -94,7 +99,7 @@ async function getIssues() {
         repo: 'hicetnunc',
         state: 'open',
         labels: 'feature-request',
-        per_page: 100
+        per_page: 30
     } )
 
     return response
