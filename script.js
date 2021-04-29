@@ -1,32 +1,53 @@
 // documentation for octokit: https://octokit.github.io/rest.js/v18
 import { Octokit } from 'https://cdn.skypack.dev/@octokit/rest'
+import { createAppAuth } from 'https://cdn.skypack.dev/@octokit/auth-app'
 
 //currently not authenticated
-const octokit = new Octokit();
+let octokit = new Octokit();
+
+/*
 
 let userId = null
 
 getUser()
 
+
 function getUser() {
+
     const here = window.location.href
+    const params = new URLSearchParams( here.substring( here.indexOf( '?' ) ) )
 
-    if ( here.includes( 'code' ) === true ) {
+    if ( params.has( 'code' ) && params.has( 'state' ) ) {
 
-        userId = here.substring( here.indexOf( '=' ) + 1 )
+        const state = params.get( 'state' )
 
-        console.log( userId )
+        if ( state === localStorage[ 'state' ] ) {
+
+            userId = params.get( 'code' )
+
+
+
+
+
+        }
 
     }
 }
 
 const loginbtn = document.getElementById( 'loginbtn' )
+
 if ( userId !== null ) {
+
     loginbtn.disabled = true
 }
+
 loginbtn.onclick = () => {
 
-    window.location.href = 'https://github.com/login/oauth/authorize?client_id=21066815541aa6f53c67&redirect_uri=https%3A%2F%2Ffraguada.github.io%2Fhenvote%2F'
+    const state = uuidv4()
+
+    localStorage.setItem('state', state)
+
+    window.location.href = 'https://github.com/login/oauth/authorize?client_id=21066815541aa6f53c67&redirect_uri=https%3A%2F%2Ffraguada.github.io%2Fhenvote%2F&state=' + state
 
 }
 
@@ -36,7 +57,7 @@ function vote () {
 }
 
 
-
+*/
 (async () => {
 
     const data = await getIssuesData()
@@ -50,18 +71,25 @@ function vote () {
         const a = document.createElement( 'a' )
         const div = document.createElement( 'div' )
         const hr = document.createElement( 'hr' )
-        const btn = document.createElement( 'button' )
+        //const content = document.createElement( 'div' )
+        // const btn = document.createElement( 'button' )
         a.href = d.url
         a.innerText = ' #' + d.number + ': ' + d.title
-        div.innerText = 'votes: ' + d.votes + ' |'
+        //a.style.fontWeight='bold'
+        div.innerText = '+' + d.votes + ' |'
         div.style.display = 'inline-block'
+        //div.style.fontWeight='bold'
+        //content.innerText = d.content
+        /*
         btn.id = 'votebtn'
         btn.onclick = vote
         btn.innerText = 'vote'
         btn.disabled = ( userId === null ) ? true : false
-        el.appendChild( btn )
+        */
+        // el.appendChild( btn )
         el.appendChild( div )
         el.appendChild( a )
+        //el.appendChild( content )
         el.style.display = 'inline-block'
         document.body.appendChild( el )
         document.body.appendChild( hr )
@@ -116,6 +144,7 @@ async function getIssuesData() {
         const issueData = {
             number: issue.number,
             title: issue.title,
+            content: issue.body.substring( 0, 240 ) + '...',
             url: issue.html_url,
             votes: votes
         }
@@ -138,7 +167,8 @@ async function getIssues() {
         repo: 'hicetnunc',
         state: 'open',
         labels: 'feature-request',
-        per_page: 30
+        per_page: 30,
+        direction: 'asc'
     } )
 
     return response
@@ -152,6 +182,15 @@ async function getIssueReactions ( issueId ) {
         issue_number: issueId,
     })
 
+    console.log( response )
+
     return response
 
+}
+
+// from https://stackoverflow.com/a/2117523/2179399
+function uuidv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
 }
